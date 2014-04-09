@@ -8,6 +8,11 @@ import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+/**
+ * An entity representing a piece of complaint.
+ * @author whf
+ *
+ */
 @Entity(name = "complain_item")
 public class ComplainItem {
 	@Id @GeneratedValue
@@ -23,6 +28,7 @@ public class ComplainItem {
 	@Temporal(TemporalType.DATE)
 	private Date time;
 
+	private String title;
 	private String content;
 	
 	/**
@@ -98,6 +104,13 @@ public class ComplainItem {
 	 */
 	public String getContent() {
 		return content;
+	}
+	
+	public String getTitle() {
+		return title;
+	}
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	/**

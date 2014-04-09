@@ -1,18 +1,160 @@
 package cn.neo.icomplain;
 
+import java.util.Date;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Spinner;
+import org.eclipse.swt.widgets.Text;
+
 import cn.neo.icomplain.entity.ComplainItem;
 import cn.neo.icomplain.util.DbManager;
 
-/**
- * The program main class.
- * @author whf
- *
- */
-public class App {
-	public static void main(String[] args) {
-		ComplainItem item = new ComplainItem();
-		item.setNickName("Neo");
+public class App extends Shell {
+	private Text title;
+	private Text content;
 
-		DbManager.persist(item);
+	private boolean isPersonSelected = true;
+	private boolean isAffairSelected = false;
+
+	/**
+	 * Launch the application.
+	 * 
+	 * @param args
+	 */
+	public static void main(String args[]) {
+		try {
+			Display display = Display.getDefault();
+			App shell = new App(display);
+			shell.open();
+			shell.layout();
+			while (!shell.isDisposed()) {
+				if (!display.readAndDispatch()) {
+					display.sleep();
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Create the shell.
+	 * 
+	 * @param display
+	 */
+	public App(Display display) {
+		super(display, SWT.SHELL_TRIM);
+		setText("IComplain");
+		setSize(345, 496);
+		setLayout(null);
+
+		title = new Text(this, SWT.BORDER);
+		title.setBounds(101, 28, 204, 31);
+
+		Button btnPerson = new Button(this, SWT.RADIO);
+		btnPerson.setSelection(true);
+		btnPerson.setBounds(101, 81, 71, 25);
+		btnPerson.setText("Person");
+		// user clicks this button
+		btnPerson.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				isPersonSelected = true;
+				isAffairSelected = false;
+			}
+		});
+
+		Button btnAffair = new Button(this, SWT.RADIO);
+		btnAffair.setBounds(197, 81, 108, 25);
+		btnAffair.setText("Affair");
+		// user clicks this button
+		btnAffair.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				isPersonSelected = false;
+				isAffairSelected = true;
+			}
+		});
+
+		content = new Text(this, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL
+				| SWT.MULTI);
+		content.setBounds(102, 126, 203, 153);
+
+		Button btnSubmit = new Button(this, SWT.NONE);
+		btnSubmit.setBounds(99, 380, 92, 33);
+		btnSubmit.setText("I complain");
+		// If user clicks this button,
+		// persist complaint to database.
+		btnSubmit.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				ComplainItem item = new ComplainItem();
+
+				item.setTime(new Date());
+				item.setTitle(title.getText());
+				item.setContent(content.getText());
+
+				String type = isPersonSelected ? "PERSON" : "AFFAIR";
+				item.setType(type);
+
+				DbManager.persist(item);
+			}
+		});
+
+		Button btnGiveUp = new Button(this, SWT.NONE);
+		btnGiveUp.setText("Give up");
+		btnGiveUp.setBounds(213, 380, 92, 33);
+		btnGiveUp.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				clearText();
+			}
+		});
+
+		Label lblNewLabel = new Label(this, SWT.NONE);
+		lblNewLabel.setBounds(31, 28, 46, 33);
+		lblNewLabel.setText("Title:");
+
+		Label lblType = new Label(this, SWT.NONE);
+		lblType.setText("Type:");
+		lblType.setBounds(31, 81, 46, 21);
+
+		Label lblContent = new Label(this, SWT.NONE);
+		lblContent.setText("Content:");
+		lblContent.setBounds(25, 173, 71, 21);
+
+		Label lblAngerLevel = new Label(this, SWT.NONE);
+		lblAngerLevel.setText("AL:");
+		lblAngerLevel.setBounds(45, 311, 32, 21);
+
+		Spinner alValue = new Spinner(this, SWT.BORDER);
+		alValue.setBounds(176, 312, 46, 31);
+		createContents();
+	}
+	
+	/**
+	 * Clear the content of the Text control.
+	 */
+	private void clearText() {
+		title.setText("");
+		content.setText("");
+	}
+
+	/**
+	 * Create contents of the shell.
+	 */
+	protected void createContents() {
+
+	}
+
+	@Override
+	protected void checkSubclass() {
+		// Disable the check that prevents subclassing of SWT components
 	}
 }
