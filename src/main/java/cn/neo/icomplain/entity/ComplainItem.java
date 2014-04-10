@@ -25,7 +25,7 @@ public class ComplainItem {
 	
 	private String nickName;
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date time;
 
 	private String title;

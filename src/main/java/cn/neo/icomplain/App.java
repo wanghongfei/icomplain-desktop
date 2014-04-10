@@ -2,6 +2,8 @@ package cn.neo.icomplain;
 
 import java.util.Date;
 
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -18,9 +20,14 @@ import cn.neo.icomplain.util.DbManager;
 public class App extends Shell {
 	private Text title;
 	private Text content;
-
+	
+	private App instance;
+	
 	private boolean isPersonSelected = true;
 	private boolean isAffairSelected = false;
+	
+	private static Logger log = Logger.getLogger(App.class);;
+	
 
 	/**
 	 * Launch the application.
@@ -28,11 +35,22 @@ public class App extends Shell {
 	 * @param args
 	 */
 	public static void main(String args[]) {
+		log.info("Intializing application ...");
+		long startTime = System.currentTimeMillis();
+		
+		// initialize JAP
+		initJPA();
+		
 		try {
+			// show window
 			Display display = Display.getDefault();
 			App shell = new App(display);
 			shell.open();
 			shell.layout();
+			
+			long endTime = System.currentTimeMillis();
+			log.info("IComplain has started in " + (endTime - startTime) + " ms");
+			
 			while (!shell.isDisposed()) {
 				if (!display.readAndDispatch()) {
 					display.sleep();
@@ -50,6 +68,8 @@ public class App extends Shell {
 	 */
 	public App(Display display) {
 		super(display, SWT.SHELL_TRIM);
+		instance = this;
+		
 		setText("IComplain");
 		setSize(345, 496);
 		setLayout(null);
@@ -104,6 +124,7 @@ public class App extends Shell {
 				item.setType(type);
 
 				DbManager.persist(item);
+				//Shell alert = new Shell(instance);
 			}
 		});
 
@@ -156,5 +177,14 @@ public class App extends Shell {
 	@Override
 	protected void checkSubclass() {
 		// Disable the check that prevents subclassing of SWT components
+	}
+	
+	private static void initJPA() {
+		try {
+			Class.forName("cn.neo.icomplain.util.DbManager");
+		} catch (ClassNotFoundException ex) {
+			// never happen!
+			ex.printStackTrace();
+		}
 	}
 }
