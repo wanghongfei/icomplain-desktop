@@ -2,14 +2,15 @@ package cn.neo.icomplain;
 
 import java.util.Date;
 
-import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
@@ -17,11 +18,20 @@ import org.eclipse.swt.widgets.Text;
 import cn.neo.icomplain.entity.ComplainItem;
 import cn.neo.icomplain.util.DbManager;
 
+/**
+ * Application main class/main window.
+ * @author whf
+ *
+ */
 public class App extends Shell {
 	private Text title;
 	private Text content;
 	
+	private Label prompt;
+	private Spinner alValue;
+	
 	private App instance;
+	private Display display;
 	
 	private boolean isPersonSelected = true;
 	private boolean isAffairSelected = false;
@@ -35,6 +45,11 @@ public class App extends Shell {
 	 * @param args
 	 */
 	public static void main(String args[]) {
+		// show splash window
+		LoadingWindow loadingWindow = new LoadingWindow(Display.getDefault());
+		loadingWindow.centralize();
+		loadingWindow.open();
+		
 		log.info("Intializing application ...");
 		long startTime = System.currentTimeMillis();
 		
@@ -45,6 +60,12 @@ public class App extends Shell {
 			// show window
 			Display display = Display.getDefault();
 			App shell = new App(display);
+			shell.centralize();
+			
+			// close splash window
+			loadingWindow.close();
+			
+			// show main window
 			shell.open();
 			shell.layout();
 			
@@ -60,6 +81,20 @@ public class App extends Shell {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * Show window on screen center
+	 */
+	public void centralize() {
+		Monitor monitor = display.getPrimaryMonitor();
+		Rectangle bounds = monitor.getBounds();
+		Rectangle rect = instance.getBounds();
+		
+		int x = bounds.x + (bounds.width - rect.width) / 2;
+		int y = bounds.y + (bounds.height - rect.height) / 2;
+		
+		instance.setLocation(x, y);
+	}
 
 	/**
 	 * Create the shell.
@@ -69,9 +104,10 @@ public class App extends Shell {
 	public App(Display display) {
 		super(display, SWT.SHELL_TRIM);
 		instance = this;
+		this.display = display;
 		
 		setText("IComplain");
-		setSize(345, 496);
+		setSize(345, 507);
 		setLayout(null);
 
 		title = new Text(this, SWT.BORDER);
@@ -114,17 +150,35 @@ public class App extends Shell {
 		btnSubmit.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				log.info("Prepare to persist data");
+				
+				// pop up a confirm dialog
+				AlertWindow alert = new AlertWindow(instance, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
+				
+				// If user click "Give up",
+				// cancel persist operation.
+				if(!alert.open()) {
+					log.info("User canceled persistence");
+					return;
+				}
+				
+				//System.out.println(alValue.getData());
+					
+				// create entity
 				ComplainItem item = new ComplainItem();
 
 				item.setTime(new Date());
 				item.setTitle(title.getText());
 				item.setContent(content.getText());
+				item.setAngerLevel(alValue.getSelection());
 
 				String type = isPersonSelected ? "PERSON" : "AFFAIR";
 				item.setType(type);
 
 				DbManager.persist(item);
-				//Shell alert = new Shell(instance);
+				
+				prompt.setText("Submit successfully");
+				log.info("Persistence finished");
 			}
 		});
 
@@ -154,17 +208,25 @@ public class App extends Shell {
 		lblAngerLevel.setText("AL:");
 		lblAngerLevel.setBounds(45, 311, 32, 21);
 
-		Spinner alValue = new Spinner(this, SWT.BORDER);
+		alValue = new Spinner(this, SWT.BORDER);
+		alValue.setMaximum(5);
+		alValue.setMinimum(1);
+		alValue.setSelection(1);
 		alValue.setBounds(176, 312, 46, 31);
+		
+		prompt = new Label(this, SWT.NONE);
+		prompt.setBounds(132, 430, 146, 21);
 		createContents();
 	}
 	
 	/**
 	 * Clear the content of the Text control.
 	 */
-	private void clearText() {
+	public void clearText() {
 		title.setText("");
 		content.setText("");
+		
+		prompt.setText("Clean successfully");
 	}
 
 	/**
