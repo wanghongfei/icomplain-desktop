@@ -3,8 +3,10 @@ icomplain-desktop
 
 发牢骚软件桌面版(I complain)
 
-#### Introduction
-* 脏话、狠话都丢到这里来，只有自己能看到。
+## Introduction
+* Put your dirty, ugly, secret complaint into this software. Nobody is able to see it except you.
 
-#### Notice
-* 由于maven仓库中没有SWT，所以构建工程需要手动下载swt安装到本地仓库中。groupId=org.eclipse.swt, artifactId=swt-linux-64, version=4.2.2.RELEASE
+## Build
+* To build this project, you have to dowload SWT jar file manually due to the lack of SWT in Maven Repository.
+* After that, set groupId to org.eclipse.swt, artifactId to swt-linux-64 and version to 4.2.2.RELEASE and install it to your local Maven Repository.
+* Finally, execute `mvn clean package -Dmaven.test.skip=true`
