@@ -102,7 +102,7 @@ public class App extends Shell {
 	 * @param display
 	 */
 	public App(Display display) {
-		super(display, SWT.SHELL_TRIM);
+		super(display, SWT.CLOSE | SWT.MIN | SWT.TITLE);
 		instance = this;
 		this.display = display;
 		
