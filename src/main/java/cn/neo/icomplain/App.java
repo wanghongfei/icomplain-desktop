@@ -107,7 +107,7 @@ public class App extends Shell {
 		this.display = display;
 		
 		setText("IComplain");
-		setSize(345, 507);
+		setSize(370, 508);
 		setLayout(null);
 
 		title = new Text(this, SWT.BORDER);
@@ -177,6 +177,7 @@ public class App extends Shell {
 
 				DbManager.persist(item);
 				
+				clearText();
 				prompt.setText("Submit successfully");
 				log.info("Persistence finished");
 			}

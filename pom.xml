@@ -4,7 +4,7 @@
 
 	<groupId>cn.neo.icomplain</groupId>
 	<artifactId>icomplain-desktop</artifactId>
-	<version>1.1-SNAPSHOT</version>
+	<version>1.1-RELEASE</version>
 	<packaging>jar</packaging>
 
 	<name>icomplain-desktop</name>

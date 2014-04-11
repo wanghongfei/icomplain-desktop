@@ -65,7 +65,7 @@ public class AlertWindow extends Dialog {
 				alertWindow.close();
 				alertWindow.dispose();
 				
-				parentWindow.clearText();
+				//parentWindow.clearText();
 			}
 		});
 		
