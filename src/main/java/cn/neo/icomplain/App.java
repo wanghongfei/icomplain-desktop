@@ -15,7 +15,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 
-import cn.neo.icomplain.entity.ComplainItem;
+import cn.neo.icomplain.entity.ComplaintItem;
 import cn.neo.icomplain.util.DbManager;
 
 /**
@@ -152,6 +152,8 @@ public class App extends Shell {
 			public void widgetSelected(SelectionEvent e) {
 				log.info("Prepare to persist data");
 				
+				prompt.setText("Prepare to submit");
+				
 				// pop up a confirm dialog
 				AlertWindow alert = new AlertWindow(instance, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
 				
@@ -165,7 +167,7 @@ public class App extends Shell {
 				//System.out.println(alValue.getData());
 					
 				// create entity
-				ComplainItem item = new ComplainItem();
+				ComplaintItem item = new ComplaintItem();
 
 				item.setTime(new Date());
 				item.setTitle(title.getText());

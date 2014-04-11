@@ -6,7 +6,7 @@
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 		<properties>
 			<!-- standard properties -->
-			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/icomplain_desktop_test" />
+			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/icomplain_desktop" />
 			<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
 			<property name="javax.persistence.jdbc.user" value="postgres" />
 			<property name="javax.persistence.jdbc.password" value="111111" />

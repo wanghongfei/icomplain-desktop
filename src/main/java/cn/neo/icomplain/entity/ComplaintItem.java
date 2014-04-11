@@ -2,6 +2,7 @@ package cn.neo.icomplain.entity;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -13,32 +14,39 @@ import javax.persistence.TemporalType;
  * @author whf
  *
  */
-@Entity(name = "complain_item")
-public class ComplainItem {
+@Entity(name = "complaint_item")
+public class ComplaintItem {
 	@Id @GeneratedValue
 	private Integer id;
 	
 	/**
 	 * An string-integer to identity user
 	 */
+	@Column(name = "user_id")
 	private String userId;
 	
+	@Column(name = "nick_name")
 	private String nickName;
 
 	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "post_time")
 	private Date time;
 
 	private String title;
+	
+	@Column(name = "post_content")
 	private String content;
 	
 	/**
 	 * range: 1 - 5
 	 */
+	@Column(name = "anger_level")
 	private Integer angerLevel;
 	
 	/**
 	 * PERSON / AFFAIR
 	 */
+	@Column(name = "post_type")
 	private String type;
 
 	
